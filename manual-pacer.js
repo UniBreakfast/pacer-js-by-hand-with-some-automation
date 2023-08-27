@@ -1,7 +1,7 @@
 const startDate = '2023-08-21';
 let currentDate = '2023-08-21';
-const initialCP = 7; // CP - confidence points
-let currentCP = 7;
+const initialconfidence points = 7; // confidence points - confidence points
+let currentconfidence points = 7;
 
 const activities = [];
 const quests = [];
@@ -84,7 +84,7 @@ const markDict = { 'true': 'V', 'false': 'X', 'undefined': '?' };
 
   quests.push(dipping1, schedule1);
 
-  currentCP -= (dipping1.pledge + schedule1.pledge);
+  currentconfidence points -= (dipping1.pledge + schedule1.pledge);
 }
 
 // see today's quests (manually)
@@ -121,7 +121,7 @@ const markDict = { 'true': 'V', 'false': 'X', 'undefined': '?' };
 
     step.done = done;
     quest.progress += 1;
-    currentCP += 1;
+    currentconfidence points += 1;
   }
   {
     const activityId = 'sched1';
@@ -135,14 +135,12 @@ const markDict = { 'true': 'V', 'false': 'X', 'undefined': '?' };
 
     step.done = done;
     quest.progress += 1;
-    currentCP += 1;
+    currentconfidence points += 1;
   }
 }
 
 // advance to the next day (manually)
-{
-  currentDate = '2023-08-22';
-}
+currentDate = '2023-08-22';
 
 // report on step completion (automatically)
 {
@@ -157,14 +155,37 @@ const markDict = { 'true': 'V', 'false': 'X', 'undefined': '?' };
     name: 'Есть зелень', amount: '1 приём',
     difficulty: 4,
   };
-  
+
   activities.push(eatingGreens);
 }
 
 // add quest (automatically)
+takeQuest('green1', 2);
+
+// report on step completion (automatically)
+report('green1', currentDate, true);
+
+// advance to the next day (automatically)
+advanceToNextDay();
+
+// report on step completion (automatically)
 {
-  takeQuest('green1', 2);
+  report('green1', currentDate, false);
+  report('sched1', currentDate, true);
+  report('river1', currentDate, true);
 }
+
+// advance to the next day (automatically)
+advanceToNextDay();
+
+// report on step completion (automatically)
+{
+  report('sched1', currentDate, true);
+  report('river1', currentDate, true);
+}
+
+
+
 
 // see all activities
 console.table(activities);
@@ -195,8 +216,8 @@ console.table(activities);
   const stats = {
     startDate,
     currentDate,
-    initialCP,
-    currentCP,
+    initialconfidence points,
+    currentconfidence points,
     concurrentQuests,
   };
   console.table(stats);
@@ -219,11 +240,11 @@ function report(activityId, stepDate, done) {
 
   if (done) {
     quest.progress += 1;
-    currentCP += 1;
+    currentconfidence points += 1;
 
     if (quest.progress === quest.duration) {
       quest.status = 'prolonged';
-      currentCP += quest.pledge;
+      currentconfidence points += quest.pledge;
     }
 
     if (quest.status === 'prolonged') {
@@ -250,7 +271,7 @@ function getPlanForToday() {
       done: markDict[done],
       activityName: activity.name,
       progress: `${progress}/${duration}`,
-      pointsAtStake: `${done === undefined ? '1 ' : ''}${quest.status === 'active' ? `(${pledge})` : ''}`,
+      pointsAtStake: `${done === undefined ? ' 1 ' : ' '}${quest.status === 'active' ? `(${pledge}) ` : ''}`,
     };
   });
 
@@ -282,7 +303,11 @@ function takeQuest(activityId, duration, startDate = currentDate) {
   };
 
   quests.push(quest);
-  currentCP -= pledge;
+  currentconfidence points -= pledge;
+}
+
+function advanceToNextDay() {
+  currentDate = getNextDate(currentDate);
 }
 
 setInterval(() => { }, 1000);
